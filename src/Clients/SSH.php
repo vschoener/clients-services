@@ -26,6 +26,9 @@ final class SSH extends Client
     /** @var  Environment */
     private $environment;
 
+    /** @var  bool */
+    private $shellAvailable;
+
     /**
      * SSH constructor.
      * @param CredentialsSSH $credentials
@@ -60,6 +63,14 @@ final class SSH extends Client
                 $this->getCallbacks()
             );
             $this->authenticateConnection();
+
+            // We need to know is shell is available
+            $shell = $this->getShell('xterm');
+            $this->shellAvailable = (bool) $shell;
+
+            if (is_resource($shell)) {
+                fclose($shell);
+            }
         }
 
         return $this;
@@ -89,6 +100,12 @@ final class SSH extends Client
             if (!$this->authenticated) {
                 throw new \Exception('Could not authenticate SSH connection');
             }
+        } else {
+            $this->authenticated = ssh2_auth_password(
+                $this->resource,
+                $this->credentials->getUser(),
+                $this->credentials->getPass()
+            );
         }
 
         return $this;
@@ -102,7 +119,7 @@ final class SSH extends Client
     {
         $result = null;
 
-        if ($this->isAuthenticated()) {
+        if ($this->isAuthenticated() && $this->isShellAvailable()) {
             $stream = ssh2_exec($this->resource, $command);
             if (is_resource($stream)) {
                 $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
@@ -122,6 +139,20 @@ final class SSH extends Client
     }
 
     /**
+     * @param $term
+     * @return null
+     */
+    public function getShell($term)
+    {
+        $shell = null;
+        if ($this->isAuthenticated()) {
+            $shell = @ssh2_shell($this->resource, $term);
+        }
+
+        return $shell;
+    }
+
+    /**
      * @param $reason
      * @param $message
      * @param $language
@@ -136,11 +167,11 @@ final class SSH extends Client
      */
     public function disconnect()
     {
-        if ($this->isConnected() && $this->isAuthenticated()) {
+        if ($this->isConnected() && $this->isAuthenticated() && $this->isShellAvailable()) {
             // Didn't found the right way to disconnect ssh connection.
             // It appears that the shell connection persist even with this.
             // I need a confirmation :)
-            ssh2_exec($this->resource, 'exit');
+             ssh2_exec($this->resource, 'exit');
         }
         $this->resource = null;
         $this->authenticated = false;
@@ -195,5 +226,13 @@ final class SSH extends Client
     public function isAuthenticated()
     {
         return $this->authenticated;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShellAvailable()
+    {
+        return $this->shellAvailable;
     }
 }
