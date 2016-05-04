@@ -1,7 +1,7 @@
 {
   "name": "vschoener/php-clients-services",
   "type": "library",
-  "description": "Logging for PHP 5.3",
+  "description": "Services to handle different communication as SSH, SFTP, FTP on PHP",
   "keywords": ["ssh","sftp","ftp", "client", "service"],
   "homepage": "https://github.com/vschoener/php-clients-services",
   "license": "MIT",
