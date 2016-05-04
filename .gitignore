@@ -1,2 +1,4 @@
 # Ignore vendor folder
 vendor
+composer.phar
+composer.lock
