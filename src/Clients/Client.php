@@ -51,4 +51,12 @@ abstract class Client implements ClientInterface
     {
         return $this->isResourceAvailable();
     }
+
+    /**
+     * @return CredentialsAbstract
+     */
+    public function getCredentials()
+    {
+        return $this->credentials;
+    }
 }
