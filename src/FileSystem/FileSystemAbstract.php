@@ -158,6 +158,6 @@ abstract class FileSystemAbstract implements FileSystemInterface
      */
     public function isWritable()
     {
-        return $this->readable;
+        return $this->writable;
     }
 }
