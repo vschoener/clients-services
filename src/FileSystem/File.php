@@ -32,7 +32,12 @@ final class File extends FileSystemAbstract
             throw new \Exception(sprintf('[%s]: is not a file', $path));
         }
 
-        return parent::load($path);
+        parent::load($path);
+
+        // Handle file, not Stream for now
+        $this->type = self::FILE;
+
+        return $this;
     }
 
     /**

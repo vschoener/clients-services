@@ -34,7 +34,7 @@ abstract class FileSystemAbstract implements FileSystemInterface
     private $size;
 
     /** @var  string */
-    private $type;
+    protected $type;
 
     /** @var  bool */
     private $readable;
@@ -78,9 +78,6 @@ abstract class FileSystemAbstract implements FileSystemInterface
         $this->size = filesize($path);
         $this->readable = is_readable($path);
         $this->writable = is_writeable($path);
-        
-        // Handle file, not Stream for now
-        $this->type = is_dir($path) ? self::DIRECTORY : (is_file($path) ? self::FILE : null);
 
         $info = null;
         unset($info);

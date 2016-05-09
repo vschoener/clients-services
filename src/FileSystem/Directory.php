@@ -34,7 +34,12 @@ class Directory extends FileSystemAbstract
             throw new \Exception(sprintf('[%s]: is not a directory', $path));
         }
 
-        return parent::load($path);
+        parent::load($path);
+
+        // Handle file, not Stream for now
+        $this->type = self::DIRECTORY;
+
+        return $this;
     }
 
     /**
