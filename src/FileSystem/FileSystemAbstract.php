@@ -45,7 +45,7 @@ abstract class FileSystemAbstract implements FileSystemInterface
     /**
      * @return bool
      */
-    protected function isFileSet()
+    public function exist()
     {
         return $this->fileLoaded;
     }

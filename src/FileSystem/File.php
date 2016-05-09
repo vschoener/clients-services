@@ -11,14 +11,14 @@ final class File extends FileSystemAbstract
     /** @var  string */
     private $mode;
 
-    const MODE_READ = 'r';
+    const READ_OPEN_MODE = 'r';
 
     /**
      * File constructor.
      */
     public function __construct()
     {
-        $this->mode = File::MODE_READ;
+        $this->mode = File::READ_OPEN_MODE;
     }
 
     /**
@@ -44,12 +44,12 @@ final class File extends FileSystemAbstract
      */
     public function open()
     {
-        if ($this->isFileSet()) {
+        if ($this->exist()) {
             $this->resource = fopen($this->getPath(), $this->getMode());
         }
         return $this;
     }
-    
+
     /**
      * @return bool
      */
@@ -70,7 +70,7 @@ final class File extends FileSystemAbstract
 
         return $line;
     }
-    
+
     /**
      * @return $this
      */
@@ -92,10 +92,29 @@ final class File extends FileSystemAbstract
     }
 
     /**
+     * @param $filePath
+     * @param int $mode
+     * @return bool
+     */
+    public function create($filePath, $mode = 0644)
+    {
+        if (!file_exists($filePath)) {
+            if (!touch($filePath)) {
+                return false;
+            }
+            chmod($filePath, $mode);
+        }
+
+        // Then load the file
+        $this->setFile($filePath);
+        return true;
+    }
+
+    /**
      * Move the begin of the content file
      */
     public function moveCursorToBeginFile()
     {
-
+        // TODO: Implement method
     }
 }

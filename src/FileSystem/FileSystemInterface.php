@@ -15,4 +15,6 @@ interface FileSystemInterface
     public function setFile($filePath);
 
     public function read();
+
+    public function create($filePath, $mode = 0644);
 }

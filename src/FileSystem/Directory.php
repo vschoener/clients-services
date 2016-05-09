@@ -11,9 +11,16 @@ class Directory extends FileSystemAbstract
     /** @var  resource */
     private $context;
 
+    /** @var bool  */
+    private $createRecursively;
+
+    /**
+     * Directory constructor.
+     */
     public function __construct()
     {
         $this->context = null;
+        $this->createRecursively = false;
     }
 
     /**
@@ -37,7 +44,7 @@ class Directory extends FileSystemAbstract
     */
     public function open()
     {
-        if ($this->isFileSet()) {
+        if ($this->exist()) {
             $this->resource = opendir($this->getPath(), $this->getContext());
         }
         return $this;
@@ -78,5 +85,34 @@ class Directory extends FileSystemAbstract
     public function isClose()
     {
         return !$this->isOpen();
+    }
+
+    /**
+     * @param $filePath
+     * @param int $mode
+     * @return bool
+     * @throws \Exception
+     */
+    public function create($filePath, $mode = 0755)
+    {
+        if (!file_exists($filePath)) {
+            if (!mkdir($filePath, $mode, $this->createRecursively)) {
+                return false;
+            }
+        }
+
+        // Then load the directory
+        $this->setFile($filePath);
+        return true;
+    }
+
+    /**
+     * @param bool $state
+     * @return $this
+     */
+    public function setCreateRecursively($state)
+    {
+        $this->createRecursively = (bool) $state;
+        return $this;
     }
 }
