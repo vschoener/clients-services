@@ -20,7 +20,7 @@ This package will be improved later to add new services / clients.
 
 For now it's under development and will support the following services:
 - [x] SSH
-- [ ] SFTP
+- [x] SFTP
 - [ ] FTP
 - [ ] ... Any new services could be added there later
 
@@ -74,7 +74,7 @@ The ssh service is here to help you communication with your ssh connection.
 For now it support:
 - [x] Use a ssh config file with requested alias
 - [x] Connection with IdentityFile read from you config ssh file
-- [ ] Use simple credential authentication (user / password)
+- [x] Use simple credential authentication (user / password)
 - [x] Exec any commands you want (simple tasks for now and blocking method)
 - [ ] Implement shortcut methods to use classic shell command as ls, cd..
 
@@ -82,10 +82,10 @@ For now it support:
 The sftp service is here to help communication with sftp connection.
 Of cource this one depends of SSH Service.
 For now it support:
-- [ ] Request subsystem from SSH
+- [x] Request subsystem from SSH
 - [ ] Browse to distant folder
-- [ ] Download file from the server
-- [ ] Upload file to the server
+- [x] Download file from the server
+- [x] Upload file to the server
 - [ ] Download directory from the server
 - [ ] Upload directory to the server
 
