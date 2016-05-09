@@ -1,12 +1,14 @@
 <?php
 
 namespace VSchoener\PHPClientsServices\Clients;
+use VSchoener\PHPClientsServices\FileSystem\Directory;
+use VSchoener\PHPClientsServices\FileSystem\File;
 
 /**
  * Class SFTP
  * @package VSchoener\PHPClientsServices\Clients
  */
-final class SFTP extends Client
+final class SFTP extends FileClientAbstract
 {
     /** @var  SSH */
     private $ssh;
@@ -58,4 +60,36 @@ final class SFTP extends Client
         $this->ssh->disconnect();
         return $this;
     }
+
+    /**
+     * @param File $localFile
+     * @param $remoteLocation
+     * @param int $mode
+     * @return $this
+     */
+    public function sendFile(File $localFile, $remoteLocation, $mode = 0644)
+    {
+        if ($this->ssh->isAuthenticated() && $localFile->exist() && $localFile->isReadable()) {
+            $this->lastFileUploaded = ssh2_scp_send($this->ssh->getResource(), $localFile->getPath(), $remoteLocation, $mode);
+        }
+
+        return $this;
+    }
+
+    public function sendDirectory(Directory $localLocation, $remoteLocation, $folderMode = 0755, $fileMode = 0644)
+    {
+        // TODO: Implement sendDirectory() method.
+    }
+
+    public function storeFile($remoteLocation, Directory $localLocation)
+    {
+        // TODO: Implement storeFile() method.
+    }
+
+    public function storeFolder($remoteLocation, Directory $localLocation)
+    {
+        // TODO: Implement storeFolder() method.
+    }
+
+
 }
