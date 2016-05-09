@@ -15,7 +15,7 @@ interface FileClientInterface
 
     public function sendDirectory(Directory $localLocation, $remoteLocation, $folderMode = 0755, $fileMode = 0644);
 
-    public function storeFile($remoteLocation, Directory $localLocation);
+    public function storeFile($remoteLocation, Directory $localLocation, $fileName);
 
     public function storeFolder($remoteLocation, Directory $localLocation);
 }

@@ -81,9 +81,18 @@ final class SFTP extends FileClientAbstract
         // TODO: Implement sendDirectory() method.
     }
 
-    public function storeFile($remoteLocation, Directory $localLocation)
+    /**
+     * @param $remoteLocation
+     * @param Directory $localLocation
+     * @param string $fileName
+     * @return $this
+     */
+    public function storeFile($remoteLocation, Directory $localLocation, $fileName)
     {
-        // TODO: Implement storeFile() method.
+        if ($this->ssh->isAuthenticated() && $localLocation->exist() && $localLocation->isWritable()) {
+            $this->lastFileDownloaded = ssh2_scp_recv($this->ssh->getResource(), $remoteLocation, $localLocation->getPath().'/'.$fileName);
+        }
+        return $this;
     }
 
     public function storeFolder($remoteLocation, Directory $localLocation)
