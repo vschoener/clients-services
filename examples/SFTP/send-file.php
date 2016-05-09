@@ -15,7 +15,7 @@ $credentials = new VSchoener\PHPClientsServices\Credentials\CredentialsSSH();
 
 try {
 
-    // Set your host information
+    // Set your host information    
     $credentials->setHost('');
     $credentials->setUser('');
     $credentials->setPass('');

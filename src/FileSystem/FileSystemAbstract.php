@@ -40,6 +40,9 @@ abstract class FileSystemAbstract implements FileSystemInterface
     private $readable;
 
     /** @var  bool */
+    private $writable;
+
+    /** @var  bool */
     private $fileLoaded;
 
     /**
@@ -51,32 +54,33 @@ abstract class FileSystemAbstract implements FileSystemInterface
     }
 
     /**
-     * @param $filePath
+     * @param $path
      * @return $this
      * @throws \Exception
      */
-    public function setFile($filePath)
+    public function load($path)
     {
-        if ($this->fileLoaded && $filePath == $this->getPath()) {
+        if ($this->fileLoaded && $path == $this->getPath()) {
             return $this;
         }
         
         $this->fileLoaded = false;
-        if (!is_file($filePath) || !file_exists($filePath)) {
-            throw new \Exception(sprintf('[%s]: is not a file or doesn\'t exist', $filePath));
+        if (!file_exists($path)) {
+            throw new \Exception(sprintf('[%s]: doesn\'t exist', $path));
         }
 
-        $info = pathinfo($filePath);
-        $this->path = $filePath;
+        $info = pathinfo($path);
+        $this->path = $path;
         $this->baseName = array_key_exists('basename', $info) ? $info['basename'] : '';
         $this->dirName = array_key_exists('dirname', $info) ? $info['dirname'] : '';
         $this->fileName = array_key_exists('filename', $info) ? $info['filename'] : '';
         $this->extension = array_key_exists('extension', $info) ? $info['extension'] : '';
-        $this->size = filesize($filePath);
-        $this->readable = is_readable($filePath);
+        $this->size = filesize($path);
+        $this->readable = is_readable($path);
+        $this->writable = is_writeable($path);
         
         // Handle file, not Stream for now
-        $this->type = is_dir($filePath) ? self::DIRECTORY : (is_file($filePath) ? self::FILE : null);
+        $this->type = is_dir($path) ? self::DIRECTORY : (is_file($path) ? self::FILE : null);
 
         $info = null;
         unset($info);
@@ -145,6 +149,14 @@ abstract class FileSystemAbstract implements FileSystemInterface
      * @return mixed
      */
     public function isReadable()
+    {
+        return $this->readable;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function isWritable()
     {
         return $this->readable;
     }

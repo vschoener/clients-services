@@ -12,7 +12,7 @@ interface FileSystemInterface
 
     public function close();
 
-    public function setFile($filePath);
+    public function load($path);
 
     public function read();
 

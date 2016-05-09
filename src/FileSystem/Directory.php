@@ -24,6 +24,20 @@ class Directory extends FileSystemAbstract
     }
 
     /**
+     * @param $path
+     * @return $this
+     * @throws \Exception
+     */
+    public function load($path)
+    {
+        if (!is_dir($path)) {
+            throw new \Exception(sprintf('[%s]: is not a directory', $path));
+        }
+
+        return parent::load($path);
+    }
+
+    /**
      * @return resource
      */
     public function getContext()
@@ -102,7 +116,7 @@ class Directory extends FileSystemAbstract
         }
 
         // Then load the directory
-        $this->setFile($filePath);
+        $this->load($filePath);
         return true;
     }
 

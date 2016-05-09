@@ -17,7 +17,7 @@ $configFile = new \VSchoener\PHPClientsServices\FileSystem\File();
 
 try {
     // Set the pass to your ssh connection
-    $configFile->setFile('/home/{user}/.ssh/config');
+    $configFile->load('/home/{user}/.ssh/config');
     $credentials->loadConfigFile($configFile, '{host-name}');
 
     $ssh = new \VSchoener\PHPClientsServices\Clients\SSH($credentials, $environment);

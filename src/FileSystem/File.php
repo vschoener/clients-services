@@ -22,6 +22,20 @@ final class File extends FileSystemAbstract
     }
 
     /**
+     * @param $path
+     * @return $this
+     * @throws \Exception
+     */
+    public function load($path)
+    {
+        if (!is_file($path)) {
+            throw new \Exception(sprintf('[%s]: is not a file', $path));
+        }
+
+        return parent::load($path);
+    }
+
+    /**
      * @return mixed
      */
     public function getMode()
@@ -106,7 +120,7 @@ final class File extends FileSystemAbstract
         }
 
         // Then load the file
-        $this->setFile($filePath);
+        $this->load($filePath);
         return true;
     }
 
