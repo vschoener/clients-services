@@ -39,9 +39,9 @@ abstract class Client implements ClientInterface
     protected function hasRequiredCredentials()
     {
         $host = $this->credentials->getHost();
-        $port = $this->credentials->getPort();
+        $user = $this->credentials->getUser();
 
-        return !empty($host) && !empty($port);
+        return !empty($host) && !empty($user);
     }
 
     /**

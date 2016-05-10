@@ -35,7 +35,7 @@ final class SSH extends Client
      * @param Environment $environment
      * @throws \Exception
      */
-    public function __construct(CredentialsSSH $credentials, Environment $environment)
+    public function __construct(CredentialsSSH $credentials, Environment $environment = null)
     {
         if (!extension_loaded('ssh2')) {
             throw new \Exception('SSH2 module is require to use this class');
@@ -82,11 +82,17 @@ final class SSH extends Client
      */
     private function authenticateConnection()
     {
+        if (null == $this->resource) {
+            return $this;
+        }
+
         $identityFile = $this->credentials->getIdentityFile();
-        $identityFile = $this->environment->translateToCompleteRelativePath($identityFile);
+
+        if ($this->environment) {
+            $identityFile = $this->environment->translateToCompleteRelativePath($identityFile);
+        }
 
         $this->authenticated = false;
-
         // If identity file is set and exist, wa can try to authenticate user
         if (!empty($identityFile) && file_exists($identityFile)) {
             $this->authenticated = ssh2_auth_pubkey_file(
@@ -101,6 +107,14 @@ final class SSH extends Client
                 throw new \Exception('Could not authenticate SSH connection');
             }
         } else {
+
+            $user = $this->credentials->getUser();
+            $password = $this->credentials->getPass();
+
+            if (empty($user) || empty($password)) {
+                throw new \Exception('User or password are empty');
+            }
+
             $this->authenticated = ssh2_auth_password(
                 $this->resource,
                 $this->credentials->getUser(),

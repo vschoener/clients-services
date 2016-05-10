@@ -21,6 +21,21 @@ abstract class CredentialsAbstract implements CredentialsInterface
     /** @var  string */
     private $pass;
 
+    /**
+     * CredentialsAbstract constructor.
+     * @param null $host
+     * @param null $user
+     * @param null $password
+     * @param int $port
+     */
+    public function __construct($host = null, $user = null, $password = null, $port = 22)
+    {
+        $this->setHost($host)
+            ->setUser($user)
+            ->setPass($password)
+            ->setPort($port);
+    }
+
     /** @var  Environment */
     protected $environment;
 

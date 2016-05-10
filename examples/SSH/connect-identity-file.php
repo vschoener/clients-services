@@ -18,14 +18,27 @@ $configFile = new \VSchoener\PHPClientsServices\FileSystem\File();
 try {
     // Set the pass to your ssh connection
     $configFile->load('/home/{user}/.ssh/config');
-    $credentials->loadConfigFile($configFile, '{host-name}');
+
+    if (!$configFile->exist()) {
+        throw new Exception('Your ssh config file could\'t be found');
+    }
+
+    $credentials->loadConfigFile($configFile, '{alias}');
+
+    if (!$credentials->isAliasFound()) {
+        throw new Exception('Alias has not be found');
+    }
 
     $ssh = new \VSchoener\PHPClientsServices\Clients\SSH($credentials, $environment);
     $ssh->connect();
 
     // Display state about the connection and authentication
-    echo $ssh->isConnected() ? 'Connected' : 'Not Connected'.PHP_EOL;
-    echo $ssh->isAuthenticated() ? 'Authenticated' : 'Not Authenticated'.PHP_EOL;
+    echo 'SSH '.(!$ssh->isConnected() ? 'Not ' : '').'Connected'.PHP_EOL;
+    echo 'SSH '.(!$ssh->isAuthenticated() ? 'Not ' : '').'Authenticated'.PHP_EOL;
+
+    if ($ssh->isAuthenticated()) {
+        echo 'Shell '.(!$ssh->isShellAvailable() ? 'Not ' : '').'Available'.PHP_EOL;
+    }
 
     // Then disconnect
     $ssh->disconnect();

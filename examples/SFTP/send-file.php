@@ -3,25 +3,19 @@
 require __DIR__.'/../../vendor/autoload.php';
 
 /**
- * This example will show you how to connect a ssh server
- * using your .ssh/config file, just replace any {content} with your requirements
+ * This example will show you how to upload a file on your server
  */
 
-// Environment is required for SSH Client
-$environment = new \VSchoener\PHPClientsServices\Environment\Environment();
-
 // Any clients require credentials
-$credentials = new VSchoener\PHPClientsServices\Credentials\CredentialsSSH();
+$credentials = new VSchoener\PHPClientsServices\Credentials\CredentialsSSH(
+    'host',
+    'user',
+    'pass'
+);
 
 try {
 
-    // Set your host information    
-    $credentials->setHost('');
-    $credentials->setUser('');
-    $credentials->setPass('');
-    $credentials->setPort(22);
-
-    $ssh = new \VSchoener\PHPClientsServices\Clients\SSH($credentials, $environment);
+    $ssh = new \VSchoener\PHPClientsServices\Clients\SSH($credentials);
     $sftp = new \VSchoener\PHPClientsServices\Clients\SFTP($ssh);
 
     $sftp->connect();
@@ -45,7 +39,7 @@ try {
         // Then disconnect
         $sftp->disconnect();
     }
-    unset($sftp, $ssh, $credentials, $environment);
+    unset($sftp, $ssh, $credentials);
 } catch (Exception $exception) {
     // Simple exception throw when requirement are not available
     echo $exception->getMessage().PHP_EOL;

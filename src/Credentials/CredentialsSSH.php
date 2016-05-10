@@ -32,6 +32,9 @@ final class CredentialsSSH extends CredentialsAbstract
     /** @var  string */
     private $proxyCommand;
 
+    /** @var  bool */
+    private $aliasFound;
+
     /**
      * @param File $fileSystem
      * @param $alias
@@ -40,7 +43,7 @@ final class CredentialsSSH extends CredentialsAbstract
     {
         $this->fileSystem = clone $fileSystem;
 
-        $aliasFound = false;
+        $this->aliasFound = false;
         if ($this->fileSystem->isReadable() && $fileSystem->open()->isOpen()) {
             while ($fileSystem->hasContentToRead() && ($line = $fileSystem->read())) {
 
@@ -52,13 +55,13 @@ final class CredentialsSSH extends CredentialsAbstract
                 }
 
                 // First we check if we are matching an 'host' key with requested 'alias'
-                if (!$aliasFound && ($key == CredentialsSSH::HOST && $value == $alias)) {
-                    $aliasFound = true;
+                if (!$this->aliasFound && ($key == CredentialsSSH::HOST && $value == $alias)) {
+                    $this->aliasFound = true;
                     continue;
                 }
 
                 // We know alias is found and settings can be saved
-                if ($aliasFound) {
+                if ($this->aliasFound) {
 
                     // If we got an 'host' key again, we're done
                     if ($key == CredentialsSSH::HOST) {
@@ -84,12 +87,6 @@ final class CredentialsSSH extends CredentialsAbstract
                             break;
                     }
                 }
-            }
-
-            // Handle default port
-            $port = $this->getPort();
-            if (empty($port) || !$port) {
-                $this->setPort(22);
             }
         }
     }
@@ -158,5 +155,13 @@ final class CredentialsSSH extends CredentialsAbstract
     public function setPassPhrase($passPhrase)
     {
         $this->setPass($passPhrase);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAliasFound()
+    {
+        return $this->aliasFound;
     }
 }
